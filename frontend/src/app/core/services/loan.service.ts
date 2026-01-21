@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 export interface Loan {
   id: number;
@@ -8,7 +8,7 @@ export interface Loan {
   borrowerName: string;
   amount: number;
   interestRate: number;
-  status: 'Active' | 'Pending' | 'Closed';
+  status: "Active" | "Pending" | "Closed";
   termMonths?: number;
   purpose?: string;
   createdDate: string;
@@ -21,13 +21,15 @@ export interface Borrower {
   phone: string;
 }
 
+import { environment } from "src/environments/environment";
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LoanService {
-  private apiUrl = '/api';
+  private apiUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getLoans(): Observable<Loan[]> {
     return this.http.get<Loan[]>(`${this.apiUrl}/loans`);

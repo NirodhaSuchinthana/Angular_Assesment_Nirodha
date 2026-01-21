@@ -1,0 +1,130 @@
+<div class="application-container">
+  <div class="header">
+    <h1>{{ isEditMode ? 'Update Loan' : 'Loan Application' }}</h1>
+    <a routerLink="/loans" class="back-link">← Back to Loans</a>
+  </div>
+
+  <div *ngIf="submitSuccess" class="success-message" role="alert">
+    <h2>Application Submitted!</h2>
+    <p>Your loan application has been successfully submitted. Redirecting to loan list...</p>
+  </div>
+
+  <form *ngIf="!submitSuccess" [formGroup]="loanForm" (ngSubmit)="onSubmit()" class="loan-form" novalidate>
+    
+    <!-- Borrower Name -->
+    <div class="form-group">
+      <label for="borrowerName">Borrower Name <span class="required">*</span></label>
+      <input 
+        type="text" 
+        id="borrowerName" 
+        formControlName="borrowerName" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['borrowerName'].touched && f['borrowerName'].errors }"
+        placeholder="Enter full name"
+        aria-required="true"
+        [attr.aria-invalid]="f['borrowerName'].touched && f['borrowerName'].errors ? 'true' : null"
+        aria-describedby="borrowerNameError"
+      >
+      <div *ngIf="f['borrowerName'].touched && f['borrowerName'].errors" id="borrowerNameError" class="invalid-feedback" role="alert">
+        <div *ngIf="f['borrowerName'].errors['required']">Borrower name is required</div>
+        <div *ngIf="f['borrowerName'].errors['minlength']">Name must be at least 2 characters</div>
+      </div>
+    </div>
+
+    <!-- Loan Amount -->
+    <div class="form-group">
+      <label for="amount">Loan Amount ($) <span class="required">*</span></label>
+      <input 
+        type="number" 
+        id="amount" 
+        formControlName="amount" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['amount'].touched && f['amount'].errors }"
+        placeholder="1000 - 1000000"
+        aria-required="true"
+        [attr.aria-invalid]="f['amount'].touched && f['amount'].errors ? 'true' : null"
+        aria-describedby="amountError"
+      >
+      <div *ngIf="f['amount'].touched && f['amount'].errors" id="amountError" class="invalid-feedback" role="alert">
+        <div *ngIf="f['amount'].errors['required']">Amount is required</div>
+        <div *ngIf="f['amount'].errors['min']">Minimum amount is $1,000</div>
+        <div *ngIf="f['amount'].errors['max']">Maximum amount is $1,000,000</div>
+      </div>
+    </div>
+
+    <!-- Interest Rate -->
+    <div class="form-group">
+      <label for="interestRate">Interest Rate (%) <span class="required">*</span></label>
+      <input 
+        type="number" 
+        id="interestRate" 
+        formControlName="interestRate" 
+        step="0.1"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['interestRate'].touched && f['interestRate'].errors }"
+        placeholder="0.1 - 20"
+        aria-required="true"
+        [attr.aria-invalid]="f['interestRate'].touched && f['interestRate'].errors ? 'true' : null"
+        aria-describedby="interestRateError"
+      >
+      <div *ngIf="f['interestRate'].touched && f['interestRate'].errors" id="interestRateError" class="invalid-feedback" role="alert">
+        <div *ngIf="f['interestRate'].errors['required']">Interest rate is required</div>
+        <div *ngIf="f['interestRate'].errors['min']">Minimum rate is 0.1%</div>
+        <div *ngIf="f['interestRate'].errors['max']">Maximum rate is 20%</div>
+      </div>
+    </div>
+
+    <!-- Loan Term -->
+    <div class="form-group">
+      <label for="termMonths">Loan Term (Months) <span class="required">*</span></label>
+      <input 
+        type="number" 
+        id="termMonths" 
+        formControlName="termMonths" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['termMonths'].touched && f['termMonths'].errors }"
+        placeholder="12 - 360"
+        aria-required="true"
+        [attr.aria-invalid]="f['termMonths'].touched && f['termMonths'].errors ? 'true' : null"
+        aria-describedby="termMonthsError"
+      >
+      <div *ngIf="f['termMonths'].touched && f['termMonths'].errors" id="termMonthsError" class="invalid-feedback" role="alert">
+        <div *ngIf="f['termMonths'].errors['required']">Term is required</div>
+        <div *ngIf="f['termMonths'].errors['min']">Minimum term is 12 months</div>
+        <div *ngIf="f['termMonths'].errors['max']">Maximum term is 360 months</div>
+      </div>
+    </div>
+
+    <!-- Purpose -->
+    <div class="form-group">
+      <label for="purpose">Purpose <span class="required">*</span></label>
+      <select 
+        id="purpose" 
+        formControlName="purpose" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['purpose'].touched && f['purpose'].errors }"
+        aria-required="true"
+        [attr.aria-invalid]="f['purpose'].touched && f['purpose'].errors ? 'true' : null"
+        aria-describedby="purposeError"
+      >
+        <option value="" disabled>Select a purpose</option>
+        <option *ngFor="let p of purposes" [value]="p">{{ p }}</option>
+      </select>
+      <div *ngIf="f['purpose'].touched && f['purpose'].errors" id="purposeError" class="invalid-feedback" role="alert">
+        <div *ngIf="f['purpose'].errors['required']">Purpose is required</div>
+      </div>
+    </div>
+
+    <div *ngIf="submitError" class="alert alert-danger" role="alert">
+      {{ submitError }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" routerLink="/loans" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="loanForm.invalid || isSubmitting" class="btn-primary">
+        {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update Loan' : 'Submit Application') }}
+      </button>
+    </div>
+
+  </form>
+</div>

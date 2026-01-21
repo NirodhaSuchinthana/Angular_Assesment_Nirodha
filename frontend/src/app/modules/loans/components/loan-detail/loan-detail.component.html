@@ -1,0 +1,97 @@
+<div class="details-container">
+  <div class="header">
+    <div class="header-left">
+      <button (click)="goBack()" class="back-btn">← Back to Loans</button>
+      <h1>Loan Details</h1>
+    </div>
+    <div class="actions">
+      <a [routerLink]="['/loans/edit', loan?.id]" class="btn-secondary" style="background-color: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; text-decoration: none;">Edit Loan</a>
+      <button (click)="deleteLoan()" class="delete-btn" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Delete Loan</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading details...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message" role="alert">
+    {{ error }}
+    <button (click)="goBack()" class="btn-primary" style="margin-top: 10px;">Return to List</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error && loan" class="content-grid">
+    
+    <!-- Loan Information Card -->
+    <div class="card loan-card">
+      <h2>Loan Information</h2>
+      <div class="info-row">
+        <span class="label">Status:</span>
+        <span class="value">
+            <span class="status-badge" [ngClass]="loan.status.toLowerCase()">
+                {{ loan.status }}
+            </span>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="label">Amount:</span>
+        <span class="value highlight">{{ loan.amount | currency }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Interest Rate:</span>
+        <span class="value">{{ loan.interestRate }}%</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Term:</span>
+        <span class="value">{{ loan.termMonths }} months</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Purpose:</span>
+        <span class="value">{{ loan.purpose || 'N/A' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date Created:</span>
+        <span class="value">{{ loan.createdDate | date:'mediumDate' }}</span>
+      </div>
+    </div>
+
+    <!-- Monthly Payment Card -->
+    <div class="card payment-card">
+      <h2>Payment Summary</h2>
+      <div class="payment-amount">
+        <span class="amount">{{ monthlyPayment | currency }}</span>
+        <span class="period">/ month</span>
+      </div>
+      <p class="payment-note">
+        Estimated monthly payment based on {{ loan.interestRate }}% interest rate over {{ loan.termMonths }} months.
+      </p>
+    </div>
+
+    <!-- Borrower Information Card -->
+    <div class="card borrower-card">
+      <h2>Borrower Information</h2>
+      <div *ngIf="borrower; else noBorrower">
+        <div class="info-row">
+          <span class="label">Name:</span>
+          <span class="value">{{ borrower.name }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Email:</span>
+          <span class="value"><a [href]="'mailto:' + borrower.email">{{ borrower.email }}</a></span>
+        </div>
+        <div class="info-row">
+          <span class="label">Phone:</span>
+          <span class="value">{{ borrower.phone }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Borrower ID:</span>
+          <span class="value">{{ borrower.id }}</span>
+        </div>
+      </div>
+      <ng-template #noBorrower>
+        <p class="no-data">Borrower details not available.</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>

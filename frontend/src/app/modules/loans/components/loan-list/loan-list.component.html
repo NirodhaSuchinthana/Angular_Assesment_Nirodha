@@ -1,0 +1,82 @@
+<div class="loans-container">
+  <div class="header">
+    <h1>Loans</h1>
+    <a routerLink="/loans/apply" class="btn-primary">Apply for Loan</a>
+  </div>
+
+  <div class="filters" role="search" aria-label="Loan filters">
+    <div class="filter-group">
+      <label for="status-filter">Status:</label>
+      <select id="status-filter" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Pending">Pending</option>
+        <option value="Closed">Closed</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="name-filter">Borrower Name:</label>
+      <input 
+        type="text" 
+        id="name-filter" 
+        [(ngModel)]="nameFilter" 
+        (input)="onFilterChange()" 
+        placeholder="Search by name..."
+      >
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading loans...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="table-responsive">
+    <table class="loans-table" aria-label="List of loans">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Borrower Name</th>
+          <th scope="col">
+            <button (click)="sort('amount')" class="sort-btn" [attr.aria-label]="getSortAriaLabel('amount')">
+              Amount {{ getSortIcon('amount') }}
+            </button>
+          </th>
+          <th scope="col">Interest Rate</th>
+          <th scope="col">Status</th>
+          <th scope="col">
+            <button (click)="sort('createdDate')" class="sort-btn" [attr.aria-label]="getSortAriaLabel('createdDate')">
+              Created Date {{ getSortIcon('createdDate') }}
+            </button>
+          </th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let loan of filteredLoans">
+          <td>{{ loan.id }}</td>
+          <td>{{ loan.borrowerName }}</td>
+          <td>{{ loan.amount | currency }}</td>
+          <td>{{ loan.interestRate }}%</td>
+          <td>
+            <span class="status-badge" [ngClass]="loan.status.toLowerCase()">
+              {{ loan.status }}
+            </span>
+          </td>
+          <td>{{ loan.createdDate | date:'MM/dd/yyyy' }}</td>
+          <td>
+            <a [routerLink]="['/loans', loan.id]" class="view-link">View</a>
+            <button (click)="deleteLoan(loan.id, $event)" class="delete-btn" style="margin-left: 10px; color: #dc3545; background: none; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredLoans.length === 0">
+          <td colspan="7" class="no-data">No loans found matching your criteria.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,18 +1,22 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  // TODO: Add routes for loan list, loan application, and loan details
-  // { path: 'loans', component: LoanListComponent },
-  // { path: 'loans/apply', component: LoanApplicationComponent },
-  // { path: 'loans/:id', component: LoanDetailComponent },
-  { path: '**', redirectTo: '' }
+  {
+    path: "",
+    loadChildren: () =>
+      import("./modules/home/home.module").then((m) => m.HomeModule),
+  },
+  {
+    path: "loans",
+    loadChildren: () =>
+      import("./modules/loans/loans.module").then((m) => m.LoansModule),
+  },
+  { path: "**", redirectTo: "" },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
